@@ -29,8 +29,8 @@ def merge_csvs(f1: str, f2: str, default=None):
 
 
 # symbols functions
-def get_all_symbols(n: int, start:int=0) -> Set[str]:
-    a = pd.read_csv('./nasdaq_screener_1732918253375.csv')
+def get_all_symbols(file_path:str, n: int, start:int=0) -> Set[str]:
+    a = pd.read_csv(file_path)
 
     a = a.sort_values(by='Market Cap', ascending=False)
     
@@ -109,7 +109,7 @@ def fetch_historical_data_pivot(symbols, period="1y", interval="1d"):
             # Fetch historical market data for the symbol
             try:
                 data = tickers.tickers[symbol].history(period=period, interval=interval, raise_errors=True)
-            except yf.exceptions.YFInvalidPeriodError:
+            except yf.exceptions.YFInvalidPeriodError or yf.exceptions.YFPricesMissingError:
                 data = tickers.tickers[symbol].history(period="max", interval=interval)
 
             if data.empty:
@@ -131,6 +131,9 @@ def fetch_historical_data_pivot(symbols, period="1y", interval="1d"):
 
         except Exception as e:
             tqdm.write(f"Error {symbol} ({type(e)}): {e}")
+        
+        except KeyboardInterrupt:
+            break
         
         # flag for max request
         if max_req_limit_flag == 0:
@@ -172,15 +175,15 @@ def main_info_data():
     merge_csvs(info_file, 'temp.csv')
 
 def main_historical_data():
-    hist_file = "hist_data.csv"
-    n = 3000
+    hist_file = "../data/hist_data.csv"
+    n = 5000
 
     # Check if the hist_file exists
     if not os.path.exists(hist_file):
         pd.DataFrame(columns=["Symbol"]).to_csv(hist_file, index=False)
 
     # symbols = get_sp500_symbols()
-    symbols = get_all_symbols(n)
+    symbols = get_all_symbols("../data/company_info.csv", n)
     known_symbols = get_downloaded_symbols(hist_file)
 
     # Fetch and pivot historical data
@@ -215,17 +218,23 @@ def calc_moves():
         merge_csvs("./company_info.csv", './temp.csv')
 
 def temp():
-    file = './company_info3.csv'
+    # Load the two CSV files into Pandas DataFrames
+    f1 = '../data/hist_data.csv'
+    f2 = './hist_data.csv'
     
-    a = pd.read_csv('./company_info2.csv', index_col='Symbol')
+    df1 = pd.read_csv(f1)
+    df2 = pd.read_csv(f2)
 
-    a = a.sort_values(by='Market Cap', ascending=False)
+    print("ola")
 
-    a.to_csv(file)
+    # Concatenate the two DataFrames while aligning columns
+    combined_df = pd.merge(df1, df2, 'outer', sort=False)
+
+    # Save the merged data to a new CSV file
+    combined_df.to_csv('./temp.csv', index=False)
 
 
 
 if __name__ == '__main__':
-    # main_info_data()
-    # main_historical_data()
-    temp()
+    main_historical_data()
+    # temp()
