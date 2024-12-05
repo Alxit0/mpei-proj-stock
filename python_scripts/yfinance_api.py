@@ -196,18 +196,36 @@ def main_historical_data():
     merge_csvs(hist_file, 'temp.csv', default=-1)
 
 
-def temp():
-    file = './company_info.csv'
+def calc_moves():
+    tables = [
+        '../data/unprocessed/moves_tables/strong_buy.csv',
+        '../data/unprocessed/moves_tables/buy.csv',
+        '../data/unprocessed/moves_tables/hold.csv',
+        '../data/unprocessed/moves_tables/sell.csv',
+        '../data/unprocessed/moves_tables/strong_sell.csv'
+    ]
+    moves = ['SB', 'B', 'H', 'S', 'SS']
     
-    a = pd.read_csv('./nasdaq_screener_1732918253375.csv', index_col='Symbol')
+    for i, j in zip(tables, moves):
+        a = pd.read_csv(i, index_col='Symbol')
+        a['Move'] = j
+        a = a[['Name', 'Market Cap', 'Country', 'Sector', 'Industry', 'Move']]
+
+        a.to_csv('./temp.csv')
+        merge_csvs("./company_info.csv", './temp.csv')
+
+def temp():
+    file = './company_info3.csv'
+    
+    a = pd.read_csv('./company_info2.csv', index_col='Symbol')
 
     a = a.sort_values(by='Market Cap', ascending=False)
-    a = a[['Name', 'Market Cap', 'Country', 'Sector', 'Industry']]
 
     a.to_csv(file)
 
 
+
 if __name__ == '__main__':
     # main_info_data()
-    main_historical_data()
-    # temp()
+    # main_historical_data()
+    temp()
