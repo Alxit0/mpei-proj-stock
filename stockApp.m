@@ -1,23 +1,13 @@
 function stockApp()
     dataDir = './data';
 
-   
-
     % Load stock information
     companyInfo = readtable(fullfile(dataDir, 'company_info.csv'));
     allSymbols = upper(companyInfo.Symbol); % Convert to uppercase
 
     % Add path to mat_scripts for auxiliary functions
-    addpath('./mat_scripts');
-    % Main application to manage stock recommendations
-    if ~isfile('./mat_scripts/stocksFeatures.mat')
-        fprintf("Preparing stock features data...\n");
-        prepareRawData(dataDir);
-    end
-    if ~isfile('./mat_scripts/minhash.mat')
-        fprintf("Preparing MinHash data...\n");
-        minhash_prepare();
-    end
+    addpath('./bloom');
+
     % Bloom Filter Parameters
     filterSize = 1000; % Bloom Filter size
     numHashes = 7; % Number of hash functions
@@ -85,8 +75,8 @@ function stockApp()
     end
 
     % Save Bloom Filters in mat_scripts
-    save('./mat_scripts/bloomFilterOwned.mat', 'bloomFilterOwned');
-    save('./mat_scripts/bloomFilterRejected.mat', 'bloomFilterRejected');
+    save('./mats/bloomFilterOwned.mat', 'bloomFilterOwned');
+    save('./mats/bloomFilterRejected.mat', 'bloomFilterRejected');
 end
 
 
