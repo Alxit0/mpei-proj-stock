@@ -5,7 +5,7 @@ load mats/minhash.mat
 
 %% gen user hashes
 
-user_stocks = {'CTGO', 'AAPL', 'CSGP'}; % Example of multiple stocks
+user_stocks = {'CTGO', 'AAPL'}; % Example of multiple stocks
 portfolioIndices = find(ismember(data.Symbol, user_stocks));
 
 min_hashes = inf(length(portfolioIndices), k);
@@ -22,20 +22,8 @@ for idx = 1:length(portfolioIndices)
     min_hashes(idx, :) = min_hash;
 end
 
-%% calc distances
-
-nStocks = length(data.Symbol);
-J = zeros(length(portfolioIndices), nStocks);
-h = waitbar(0,'Calculating Distances');
-tic
-for pIdx = 1:length(portfolioIndices)
-    for n1 = 1:nStocks
-        waitbar(((pIdx - 1) * nStocks + n1) / (length(portfolioIndices) * nStocks), h);
-        J(pIdx, n1) = 1 - sum(M(n1,:) == min_hashes(pIdx, :)) / k;
-    end
-end
-deltatime_j = toc;
-delete (h)
+% calc distances
+J = D(portfolioIndices, :);
 
 %% Aggregate results for multiple stocks
 average_J = mean(J, 1); % Average distance across all user stocks

@@ -10,7 +10,6 @@ stockData.MarketCap = cellstr(stockData.MarketCap);
 
 dic2 = strcat(stockData.Sector, '_', stockData.Industry, '_', stockData.Country, '_', stockData.MarketCap);
 dic = dic2(:,1);
-% dic = unique(dic);
 nStocks = length(dic);
 
 shingle_sz = 3;
@@ -32,4 +31,26 @@ end
 deltatime_hash = toc;
 delete (h)
 
-save mats/minhash M k shingle_sz dic2
+nStocks = length(dic); % Number of stocks
+D = zeros(nStocks, nStocks); % Initialize distance matrix
+h = waitbar(0, 'Calculating Pairwise Distances'); % Progress bar
+tic
+
+% Iterate over all stock pairs
+for i = 1:nStocks
+    waitbar(i/nStocks, h);
+    for j = i:nStocks % Only calculate upper triangular part
+        % Calculate Jaccard distance based on MinHash
+        D(i, j) = 1 - sum(M(i, :) == M(j, :)) / k;
+        D(j, i) = D(i, j); % Symmetric distance matrix
+    end
+end
+
+deltatime_dist = toc;
+delete(h);
+
+% Save the distance matrix for future use
+save('mats/stock_distances.mat', 'D', 'deltatime_dist');
+
+
+save mats/minhash M k shingle_sz dic2 D
