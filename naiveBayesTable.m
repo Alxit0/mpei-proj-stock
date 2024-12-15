@@ -1,38 +1,11 @@
 clear
-
-data = readtable('./data/company_info.csv');
-
-% categories
-data.Country = categorical(data.Country);
-data.Sector = categorical(data.Sector);
-data.Industry = categorical(data.Industry);
-data.Move = categorical(data.Move);
-
-marketCapWindows = zeros(height(data), 1);
-for i = 1:height(data)
-    if data.MarketCap(i) > 200e9
-        marketCapWindows(i) = 1; % >200B
-    elseif data.MarketCap(i) > 10e9
-        marketCapWindows(i) = 2; % 10 - 200B
-    elseif data.MarketCap(i) > 2e9
-        marketCapWindows(i) = 3; % 2B - 10B
-    elseif data.MarketCap(i) > 300e6
-        marketCapWindows(i) = 4; % 300M - 2B
-    elseif data.MarketCap(i) > 50e6
-        marketCapWindows(i) = 5; % 50M - 300M
-    else
-        marketCapWindows(i) = 6; % <50M
-    end
-end
-
-data.MarketCap = categorical(marketCapWindows);
+load mats/stcoksFeatures.mat
 
 data.Country = grp2idx(data.Country);
 data.Sector = grp2idx(data.Sector);
 data.Industry = grp2idx(data.Industry);
 data.MarketCap = grp2idx(data.MarketCap);
-data.Move = grp2idx(data.Move); % target
-
+[data.Move, S] = grp2idx(data.Move); % target
 save mats/naiveBaseTable
 
 %% Prepare Data for Naïve Bayes Classifier
@@ -107,4 +80,5 @@ disp(scores);
 
 % Provide user-friendly recommendation based on highest probability
 [~, recommendedCategory] = max(scores);
+S(uniqueMoves(recommendedCategory))
 fprintf('The recommended Move category is: %d\n', uniqueMoves(recommendedCategory));
