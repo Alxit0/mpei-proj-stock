@@ -6,7 +6,7 @@ function findSimilarStocksFromPortfolio(allSymbols, bloomFilterOwned)
     % Get user's owned stocks
     portfolioStocks = {};
     for i = 1:length(allSymbols)
-        if checkElemento(bloomFilterOwned, allSymbols{i}, 7)
+        if bloomCheckElemento(bloomFilterOwned, allSymbols{i}, 7)
             portfolioStocks{end + 1} = allSymbols{i};
         end
     end

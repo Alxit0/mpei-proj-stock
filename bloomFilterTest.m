@@ -24,17 +24,17 @@ keys1 = symbols(1:numKeys);
 keys2 = symbols(numKeys+1:end);
 
 % Initialize Bloom Filter
-filtro = inicFiltro(n);
+filtro = bloomInicFiltro(n);
 
 % Insert keys into Bloom Filter
 for i = 1:length(keys1)
-    filtro = addElemento(filtro, keys1{i}, k);
+    filtro = bloomAddElemento(filtro, keys1{i}, k);
 end
 
 % Test false negatives
 falsoneg = 0;
 for i = 1:length(keys1)
-    if ~checkElemento(filtro, keys1{i}, k)
+    if ~bloomCheckElemento(filtro, keys1{i}, k)
         falsoneg = falsoneg + 1;
     end
 end
@@ -43,7 +43,7 @@ fprintf('False Negatives: %d\n', falsoneg);
 % Test false positives
 falsopos = 0;
 for i = 1:length(keys2)
-    if checkElemento(filtro, keys2{i}, k)
+    if bloomCheckElemento(filtro, keys2{i}, k)
         falsopos = falsopos + 1;
     end
 end
@@ -60,13 +60,13 @@ falsopos_lst = zeros(1, length(ks));
 falsopos_teorico_lst = zeros(1, length(ks));
 
 for i = 1:length(ks)
-    filtro = inicFiltro(n);
+    filtro = bloomInicFiltro(n);
     for j = 1:length(keys1)
-        filtro = addElemento(filtro, keys1{j}, ks(i));
+        filtro = bloomAddElemento(filtro, keys1{j}, ks(i));
     end
     falsopos = 0;
     for j = 1:length(keys2)
-        if checkElemento(filtro, keys2{j}, ks(i))
+        if bloomCheckElemento(filtro, keys2{j}, ks(i))
             falsopos = falsopos + 1;
         end
     end

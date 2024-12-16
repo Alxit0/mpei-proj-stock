@@ -1,3 +1,3 @@
-function filtro = inicFiltro(n)
+function filtro = bloomInicFiltro(n)
     filtro=zeros(n,1);
 end

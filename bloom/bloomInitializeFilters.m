@@ -1,4 +1,4 @@
-function [bloomFilterOwned, bloomFilterRejected] = initializeFilters(allSymbols, bloomFilterOwned, bloomFilterRejected, numHashes)
+function [bloomFilterOwned, bloomFilterRejected] = bloomInitializeFilters(allSymbols, bloomFilterOwned, bloomFilterRejected, numHashes)
     % Initialize filters for owned and rejected stocks based on user input
 
     disp('Enter the symbols of owned stocks (separated by commas):');
@@ -18,11 +18,11 @@ function [bloomFilterOwned, bloomFilterRejected] = initializeFilters(allSymbols,
 
     % Add valid stocks to filters
     for i = 1:length(validOwnedStocks)
-        bloomFilterOwned = addElemento(bloomFilterOwned, validOwnedStocks{i}, numHashes);
+        bloomFilterOwned = bloomAddElemento(bloomFilterOwned, validOwnedStocks{i}, numHashes);
     end
 
     for i = 1:length(validRejectedStocks)
-        bloomFilterRejected = addElemento(bloomFilterRejected, validRejectedStocks{i}, numHashes);
+        bloomFilterRejected = bloomAddElemento(bloomFilterRejected, validRejectedStocks{i}, numHashes);
     end
 
     disp("Bloom Filters initialized successfully.");

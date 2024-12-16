@@ -14,11 +14,11 @@ function stockApp()
     numHashes = 7; % Number of hash functions
 
     % Initialize Bloom Filters
-    bloomFilterOwned = inicFiltro(filterSize);
-    bloomFilterRejected = inicFiltro(filterSize);
+    bloomFilterOwned = bloomInicFiltro(filterSize);
+    bloomFilterRejected = bloomInicFiltro(filterSize);
 
     % Step 1: Initialize filters with user input
-    [bloomFilterOwned, bloomFilterRejected] = initializeFilters(allSymbols, bloomFilterOwned, bloomFilterRejected, numHashes);
+    [bloomFilterOwned, bloomFilterRejected] = bloomInitializeFilters(allSymbols, bloomFilterOwned, bloomFilterRejected, numHashes);
 
     % Main loop for interaction
     while true
@@ -33,24 +33,7 @@ function stockApp()
 
         if strcmp(option, "1")
             % Get stock recommendation
-            recommendedStock = getRecommendation(companyInfo, bloomFilterOwned, bloomFilterRejected, numHashes);
-
-            if isempty(recommendedStock)
-                fprintf("No stocks available for recommendation.\n");
-            else
-                fprintf("Recommended stock: %s\n", recommendedStock);
-
-                % Ask user for action on the recommendation
-                decision = input("Do you want to accept (a) or reject (r) this stock? (a/r): ", 's');
-
-                if strcmp(decision, 'a')
-                    bloomFilterOwned = addElemento(bloomFilterOwned, recommendedStock, numHashes);
-                elseif strcmp(decision, 'r')
-                    bloomFilterRejected = addElemento(bloomFilterRejected, recommendedStock, numHashes);
-                else
-                    fprintf("Invalid decision. No updates made.\n");
-                end
-            end
+            getRecommendation(companyInfo, bloomFilterOwned, bloomFilterRejected, numHashes);
 
         elseif strcmp(option, "2")
             % View owned and rejected stocks
@@ -90,7 +73,7 @@ function viewMyStocks(allSymbols, bloomFilterOwned, bloomFilterRejected, numHash
     disp("Owned stocks:");
     ownedStocks = {};
     for i = 1:length(allSymbols)
-        if checkElemento(bloomFilterOwned, allSymbols{i}, numHashes)
+        if bloomCheckElemento(bloomFilterOwned, allSymbols{i}, numHashes)
             ownedStocks{end + 1} = allSymbols{i}; %#ok<AGROW>
         end
     end
@@ -104,7 +87,7 @@ function viewMyStocks(allSymbols, bloomFilterOwned, bloomFilterRejected, numHash
     disp("\n Rejected stocks:");
     rejectedStocks = {};
     for i = 1:length(allSymbols)
-        if checkElemento(bloomFilterRejected, allSymbols{i}, numHashes)
+        if bloomCheckElemento(bloomFilterRejected, allSymbols{i}, numHashes)
             rejectedStocks{end + 1} = allSymbols{i}; %#ok<AGROW>
         end
     end

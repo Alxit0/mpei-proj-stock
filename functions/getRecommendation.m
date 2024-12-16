@@ -9,8 +9,7 @@ function recommendedStock = getRecommendation(companyInfo, bloomFilterOwned, blo
     userFeatures = [userCountry, userSector, userIndustry, userMarketCap];
 
     % Load Naïve Bayes data
-    data = load('naiveBaseTable.mat');
-    features = data.features;
+    data = load('mats/naiveBaseTable.mat');
     target = data.target;
     priorProb = data.priorProb;
     conditionalProb = data.conditionalProb;
@@ -42,26 +41,5 @@ function recommendedStock = getRecommendation(companyInfo, bloomFilterOwned, blo
     [~, bestMoveIdx] = max(scores);
     recommendedMove = uniqueMoves(bestMoveIdx);
 
-    % Filter stocks with the recommended "Move"
-    stockIndices = find(target == recommendedMove);
-    candidateStocks = companyInfo(stockIndices, :);
-
-    % Select a stock that is neither owned nor rejected
-    availableStocks = {};
-    for i = 1:height(candidateStocks)
-        stockSymbol = candidateStocks.Symbol{i};
-        isOwned = checkElemento(bloomFilterOwned, stockSymbol, numHashes);
-        isRejected = checkElemento(bloomFilterRejected, stockSymbol, numHashes);
-
-        if ~isOwned && ~isRejected
-            availableStocks{end + 1} = stockSymbol; %#ok<AGROW>
-        end
-    end
-
-    % Return a recommendation or an empty string if none available
-    if isempty(availableStocks)
-        recommendedStock = '';
-    else
-        recommendedStock = availableStocks{randi(length(availableStocks))};
-    end
+    disp(uniqueMoves(recommendedMove));
 end
