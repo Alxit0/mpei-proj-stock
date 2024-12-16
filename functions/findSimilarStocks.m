@@ -1,4 +1,4 @@
-function findSimilarStocks(userStocks)
+function recommendedStock = findSimilarStocks(userStocks)
     % Load MinHash data
     load('./mats/stocksFeatures.mat', 'data');
     load('./mats/minhash.mat', 'D', 'dic2');
@@ -29,4 +29,6 @@ function findSimilarStocks(userStocks)
     for i = 1:length(topIndices)
         fprintf('%s\n', data.Symbol{topIndices(i)});
     end
+
+    recommendedStock = data.Symbol{topIndices(1)};
 end

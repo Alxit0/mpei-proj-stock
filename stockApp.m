@@ -44,11 +44,45 @@ function stockApp()
             userStocksInput = input('Enter stocks (comma-separated): ', 's');
             userStocks = strsplit(userStocksInput, ',');
             userStocks = strtrim(upper(userStocks)); % Remove spaces and convert to uppercase
-            findSimilarStocks(userStocks);
+            recommendedStock = findSimilarStocks(userStocks);
+
+            if isempty(recommendedStock)
+                fprintf("No stocks available for recommendation.\n");
+            else
+                fprintf("Recommended stock: %s\n", recommendedStock);
+
+                % Ask user for action on the recommendation
+                decision = input("Do you want to accept (a) or reject (r) this stock? (a/r): ", 's');
+
+                if strcmp(decision, 'a')
+                    bloomFilterOwned = bloomAddElemento(bloomFilterOwned, recommendedStock, numHashes);
+                elseif strcmp(decision, 'r')
+                    bloomFilterRejected = bloomAddElemento(bloomFilterRejected, recommendedStock, numHashes);
+                else
+                    fprintf("Invalid decision. No updates made.\n");
+                end
+            end
 
         elseif strcmp(option, "4")
             % Find similar stocks based on portfolio
-            findSimilarStocksFromPortfolio(allSymbols, bloomFilterOwned);
+            recommendedStock = findSimilarStocksFromPortfolio(allSymbols, bloomFilterOwned);
+
+            if isempty(recommendedStock)
+                fprintf("No stocks available for recommendation.\n");
+            else
+                fprintf("Recommended stock: %s\n", recommendedStock);
+
+                % Ask user for action on the recommendation
+                decision = input("Do you want to accept (a) or reject (r) this stock? (a/r): ", 's');
+
+                if strcmp(decision, 'a')
+                    bloomFilterOwned = bloomAddElemento(bloomFilterOwned, recommendedStock, numHashes);
+                elseif strcmp(decision, 'r')
+                    bloomFilterRejected = bloomAddElemento(bloomFilterRejected, recommendedStock, numHashes);
+                else
+                    fprintf("Invalid decision. No updates made.\n");
+                end
+            end
 
         elseif strcmp(option, "5")
             fprintf("Exiting application...\n");

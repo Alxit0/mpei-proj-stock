@@ -1,4 +1,4 @@
-function findSimilarStocksFromPortfolio(allSymbols, bloomFilterOwned)
+function recommendedStock = findSimilarStocksFromPortfolio(allSymbols, bloomFilterOwned)
     % Load MinHash data
     load('./mats/stocksFeatures.mat', 'data');
     load('./mats/minhash.mat', 'D', 'dic2');
@@ -32,4 +32,6 @@ function findSimilarStocksFromPortfolio(allSymbols, bloomFilterOwned)
     for i = 1:min(5, length(sortedIndices))
         fprintf('%s\n', data.Symbol{sortedIndices(i)});
     end
+
+    recommendedStock = data.Symbol{sortedIndices(1)};
 end
