@@ -3,13 +3,13 @@
 dataPath = './data/company_info.csv';
 
 % Tamanho do Bloom Filter
-n = 8000;
+n = 1000;
 
 % Número de funções hash
-k = 3;
+k = 7;
 
 % Número de chaves a inserir no filtro
-numKeys = 1000;
+numKeys = 100;
 % Load stock symbols
 data = readtable(dataPath);
 symbols = upper(string(data.Symbol)); % Convert to uppercase
