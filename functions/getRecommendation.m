@@ -1,9 +1,15 @@
 function recommendedStock = getRecommendation(companyInfo, bloomFilterOwned, bloomFilterRejected, numHashes)
+    load mats/naiveBaseTable.mat
+
     % Prompt user for desired stock features
     fprintf('Enter the details of the stock you are looking for:\n');
+    displayMapping(mapCountry);
     userCountry = input('Country index (1, 2, ...): ');
+    displayMapping(mapSector);
     userSector = input('Sector index (1, 2, ...): ');
+    displayMapping(mapIndustry);
     userIndustry = input('Industry index (1, 2, ...): ');
+    displayMapping(mapMarketCap);
     userMarketCap = input('Market Cap category (1-6, as per predefined windows): ');
 
     userFeatures = [userCountry, userSector, userIndustry, userMarketCap];
@@ -41,5 +47,19 @@ function recommendedStock = getRecommendation(companyInfo, bloomFilterOwned, blo
     [~, bestMoveIdx] = max(scores);
     recommendedMove = uniqueMoves(bestMoveIdx);
 
-    disp(uniqueMoves(recommendedMove));
+    disp(S(recommendedMove));
 end
+
+function displayMapping(mapping)
+    %DISPLAYMAPPING Displays indices and strings from a cell array
+    % Input: mapping - a cell array of strings to display with indices
+    
+    if ~iscell(mapping)
+        error('Input must be a cell array of strings.');
+    end
+    
+    for i = 1:numel(mapping)
+        fprintf('%d: %s\n', i, mapping{i});
+    end
+end
+

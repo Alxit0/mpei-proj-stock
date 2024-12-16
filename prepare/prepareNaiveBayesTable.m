@@ -1,12 +1,13 @@
 clear
 load mats/stocksFeatures.mat
 
-data.Country = grp2idx(data.Country);
-data.Sector = grp2idx(data.Sector);
-data.Industry = grp2idx(data.Industry);
+[data.Country, mapCountry] = grp2idx(data.Country);
+[data.Sector, mapSector] = grp2idx(data.Sector);
+[data.Industry, mapIndustry] = grp2idx(data.Industry);
 data.MarketCap = grp2idx(data.MarketCap);
 [data.Move, S] = grp2idx(data.Move); % target
 
+mapMarketCap = {'>200B', '10 - 200B', '2B - 10B', '300M - 2B', '50M - 300M', '<50M'};
 % Prepare Data for Naïve Bayes Classifier
 
 features = table2array(data(:, {'Country', 'Sector', 'Industry', 'MarketCap'}));
