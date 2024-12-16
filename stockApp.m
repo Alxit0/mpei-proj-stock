@@ -22,7 +22,7 @@ function stockApp()
 
     % Main loop for interaction
     while true
-        fprintf("\n--- Stock Recommendation System ---\n");
+        fprintf('\n--- Stock Recommendation System ---\n');
         fprintf("1. Get a recommendation\n");
         fprintf("2. View my stocks (owned and rejected)\n");
         fprintf("3. Find similar stocks (MinHash)\n");
@@ -41,7 +41,7 @@ function stockApp()
 
         elseif strcmp(option, "3")
             % Prompt user for portfolio stocks
-            userStocksInput = input('Enter your portfolio stocks (comma-separated): ', 's');
+            userStocksInput = input('Enter stocks (comma-separated): ', 's');
             userStocks = strsplit(userStocksInput, ',');
             userStocks = strtrim(upper(userStocks)); % Remove spaces and convert to uppercase
             findSimilarStocks(userStocks);
@@ -67,10 +67,10 @@ end
 function viewMyStocks(allSymbols, bloomFilterOwned, bloomFilterRejected, numHashes)
     % List owned and rejected stocks based on Bloom Filters
 
-    disp("\n --- Your Stocks ---");
+    fprintf("\n --- Your Stocks ---\n");
 
     % Check owned stocks
-    disp("Owned stocks:");
+    fprintf("Owned stocks:");
     ownedStocks = {};
     for i = 1:length(allSymbols)
         if bloomCheckElemento(bloomFilterOwned, allSymbols{i}, numHashes)
@@ -78,13 +78,13 @@ function viewMyStocks(allSymbols, bloomFilterOwned, bloomFilterRejected, numHash
         end
     end
     if isempty(ownedStocks)
-        disp("No owned stocks.");
+        fprintf("No owned stocks.");
     else
-        disp(strjoin(ownedStocks, ', '));
+        fprintf(strjoin(ownedStocks, ', '));
     end
 
     % Check rejected stocks
-    disp("\n Rejected stocks:");
+    fprintf("\nRejected stocks:\n");
     rejectedStocks = {};
     for i = 1:length(allSymbols)
         if bloomCheckElemento(bloomFilterRejected, allSymbols{i}, numHashes)
@@ -92,8 +92,8 @@ function viewMyStocks(allSymbols, bloomFilterOwned, bloomFilterRejected, numHash
         end
     end
     if isempty(rejectedStocks)
-        disp("No rejected stocks.");
+        fprintf("No rejected stocks.");
     else
-        disp(strjoin(rejectedStocks, ', '));
+        fprintf(strjoin(rejectedStocks, ', '));
     end
 end
