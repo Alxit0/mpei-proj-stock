@@ -44,7 +44,7 @@ function stockApp()
             userStocksInput = input('Enter stocks (comma-separated): ', 's');
             userStocks = strsplit(userStocksInput, ',');
             userStocks = strtrim(upper(userStocks)); % Remove spaces and convert to uppercase
-            recommendedStock = findSimilarStocks(userStocks);
+            recommendedStock = findSimilarStocks(userStocks, bloomFilterOwned, bloomFilterRejected);
 
             if isempty(recommendedStock)
                 fprintf("No stocks available for recommendation.\n");
@@ -65,7 +65,7 @@ function stockApp()
 
         elseif strcmp(option, "4")
             % Find similar stocks based on portfolio
-            recommendedStock = findSimilarStocksFromPortfolio(allSymbols, bloomFilterOwned);
+            recommendedStock = findSimilarStocksFromPortfolio(allSymbols, bloomFilterOwned, bloomFilterRejected);
 
             if isempty(recommendedStock)
                 fprintf("No stocks available for recommendation.\n");

@@ -1,4 +1,4 @@
-function recommendedStock = findSimilarStocksFromPortfolio(allSymbols, bloomFilterOwned)
+function recommendedStock = findSimilarStocksFromPortfolio(allSymbols, bloomFilterOwned, bloomFilterRejected)
     % Load MinHash data
     load('./mats/stocksFeatures.mat', 'data');
     load('./mats/minhash.mat', 'D', 'dic2');
@@ -11,6 +11,13 @@ function recommendedStock = findSimilarStocksFromPortfolio(allSymbols, bloomFilt
         end
     end
 
+    ignoreStocks = {};
+    for i = 1:length(allSymbols)
+        if bloomCheckElemento(bloomFilterOwned, allSymbols{i}, 7) ||  bloomCheckElemento(bloomFilterRejected, allSymbols{i}, 7)
+            ignoreStocks{end + 1} = allSymbols{i};
+        end
+    end
+
     if isempty(portfolioStocks)
         fprintf("You don't have any owned stocks to calculate similarities.\n");
         return;
@@ -18,6 +25,7 @@ function recommendedStock = findSimilarStocksFromPortfolio(allSymbols, bloomFilt
 
     % Find indices of portfolio stocks
     portfolioIndices = find(ismember(data.Symbol, portfolioStocks));
+    ignoreIndices = find(ismember(data.Symbol, ignoreStocks));
 
     % Compute average distances
     J = D(portfolioIndices, :);
@@ -25,7 +33,7 @@ function recommendedStock = findSimilarStocksFromPortfolio(allSymbols, bloomFilt
 
     % Sort distances to find top similar stocks
     [~, sortedIndices] = sort(average_J);
-    sortedIndices = setdiff(sortedIndices, portfolioIndices, 'stable'); % Remove owned stocks
+    sortedIndices = setdiff(sortedIndices, ignoreIndices, 'stable'); % Remove owned stocks
 
     % Display top 5 similar stocks
     fprintf('\nTop 5 similar stocks based on your portfolio:\n');
