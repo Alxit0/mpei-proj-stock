@@ -104,7 +104,7 @@ function viewMyStocks(allSymbols, bloomFilterOwned, bloomFilterRejected, numHash
     fprintf("\n --- Your Stocks ---\n");
 
     % Check owned stocks
-    fprintf("Owned stocks:");
+    fprintf("Owned stocks:\n");
     ownedStocks = {};
     for i = 1:length(allSymbols)
         if bloomCheckElemento(bloomFilterOwned, allSymbols{i}, numHashes)

@@ -1,5 +1,17 @@
 function [bloomFilterOwned, bloomFilterRejected] = bloomInitializeFilters(allSymbols, bloomFilterOwned, bloomFilterRejected, numHashes)
     % Initialize filters for owned and rejected stocks based on user input
+    if exist('mats/bloomFilterOwned.mat', 'file') == 2
+        load('mats/bloomFilterOwned.mat');
+    else
+        disp('bloomFilterOwned.mat does not exist.');
+    end
+    
+    if exist('mats/bloomFilterRejected.mat', 'file') == 2
+        load('mats/bloomFilterRejected.mat');
+    else
+        disp('bloomFilterRejected.mat does not exist.');
+    end
+
 
     disp('Enter the symbols of owned stocks (separated by commas):');
     ownedInput = input('Example: AAPL, GOOG, TSLA: ', 's');
