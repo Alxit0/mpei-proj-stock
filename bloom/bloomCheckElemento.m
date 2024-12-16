@@ -2,7 +2,7 @@ function result = bloomCheckElemento(filtro,chave,k)
     result=true;
     for i = 1:k
         chave= [chave num2str(i)];
-        code = mod(string2hash_aux(chave, k), length(filtro))+1;
+        code = mod(string2hash(chave), length(filtro))+1;
         if filtro(code)==0
             result=false;
             break
