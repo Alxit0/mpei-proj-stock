@@ -7,6 +7,7 @@ function stockApp()
 
     % Add path to mat_scripts for auxiliary functions
     addpath('./bloom');
+    addpath('./functions');
 
     % Bloom Filter Parameters
     filterSize = 1000; % Bloom Filter size
